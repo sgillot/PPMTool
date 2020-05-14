@@ -1,6 +1,11 @@
 package fr.sgillot.ppmtool.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -10,13 +15,40 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotBlank(message = "Project identifier is required.")
+    @Size(min = 4, max = 5, message = "Please use 4 to 5 characters.")
+    @Column(updatable = false,unique = true)
     private String projectIdentifier;
+    @NotBlank(message = "Project name is required.")
     private String projectName;
+    @NotBlank(message = "Description is required.")
     private String description;
+    @JsonFormat(pattern = "YYYY-MM-dd")
     private Date startDate;
+    @JsonFormat(pattern = "YYYY-MM-dd")
+    private Date endDate;
+    @JsonFormat(pattern = "YYYY-MM-dd")
+    private Date createdDate;
+    @JsonFormat(pattern = "YYYY-MM-dd")
     private Date updateDate;
 
     public Project() {
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
     public long getId() {
@@ -69,7 +101,7 @@ public class Project {
 
     @PrePersist
     protected void onInsert() {
-        startDate = new Date();
+        createdDate = new Date();
     }
 
     @PreUpdate
